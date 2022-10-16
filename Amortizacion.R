@@ -37,12 +37,60 @@ amortizacionNormal1 <- function(df){
   
   fechas.df = Calendarios.df[Calendarios$idcredito==id,] # Selecciona solo las fechas con el mismo idcredito
   periodos = length(fechas.df$fechainicialmes) #Cuanto el número de fechas
-  periodo.primermes = as.numeric(fechas.df$fechafinalmes[1] 
-                                 - fechas.df$fechainicialmes[1])
+  dias.por.periodo = as.numeric(fechas.df$fechafinalmes 
+                                 - fechas.df$fechainicialmes)
   
-  if(mensual){
-    tasaDEinteres <- interes/12
+  if (periodicidad == "mensual"){
+    
+    dias.por.periodo[dias.por.periodo>=27] <- 30 #Todas los periodos con 27 o más días "pesan" 30 días (homogeneizar)
+    
+    if (esquema == "pagos fijos (iva incluido) mensual"){
+      tasa.periodo = tasa.interes/12. # 12 meses por año
+    }
+    else {
+      tasa.periodo = tasa.interes*(1 + iva)/12.
+    }
   }
+  else{
+    
+    dias.por.periodo[dias.por.periodo>=54] <- 60 #Todas los periodos con 27 o más días "pesan" 30 días (homogeneizar)
+    
+    tasa.periodo = tasa.interes/6. # 6 bimestres por año 
+  }
+  
 }
 
 Calendarios[Calendarios$idcredito==1,]
+
+error <- 0
+nerror <- numeric()
+for (np in 1:length((Calendarios$idcredito))){
+  fechasp<-as.numeric(Calendarios[Calendarios$idcredito==np,]$fechafinalmes 
+                      - Calendarios[Calendarios$idcredito==np,]$fechainicialmes)
+  diasi <- format(Calendarios[Calendarios$idcredito==id,]$fechainicialmes, format = "%d")
+  diasf <- format(Calendarios[Calendarios$idcredito==id,]$fechafinalmes, format = "%d")
+  
+  if (mean(fechasp) > 31){
+    ndias = 60
+    fechasp[2:length(fechasp)-1] <- ndias
+  }
+  else {
+    ndias = 30
+    fechasp[2:length(fechasp)-1] <- ndias
+  }
+  
+  if (dias[1] != dias[2]){
+    fechasp[1]
+  }
+}
+print("Hubo ", error, " errores")
+
+
+np <- 1
+fechasp<-as.numeric(Calendarios[Calendarios$idcredito==np,]$fechafinalmes 
+                    - Calendarios[Calendarios$idcredito==np,]$fechainicialmes)
+fechasp
+diasi <- format(Calendarios[Calendarios$idcredito==np,]$fechainicialmes, format = "%d")
+diasf <- format(Calendarios[Calendarios$idcredito==np,]$fechafinalmes, format = "%d")
+diasi
+diasf
